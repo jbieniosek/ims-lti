@@ -81,6 +81,17 @@ module IMS::LTI
       post_outcome_request
     end
 
+    #JBIENIOSEK EDIT
+
+    def post_replace_result_text!(score, text_data)
+      @operation = REPLACE_REQUEST
+      @score = score
+      @text_data = text_data
+      post_outcome_request
+    end
+
+    #END EDIT
+
     # POSTs a deleteResult to the Tool Consumer
     #
     # @return [OutcomeResponse] The response from the Tool Consumer
@@ -156,7 +167,15 @@ module IMS::LTI
     def has_result_data?
       !!@score
     end
-    
+
+    # JBIENIOSEK EDIT
+
+    def has_textresult_data?
+      !!@text_data
+    end
+
+    # END EDIT
+
     def results(node)
       return unless has_result_data?
       
@@ -164,6 +183,7 @@ module IMS::LTI
         result_values(res)
       end
     end
+
 
     def result_values(node)
       if @score
@@ -173,6 +193,26 @@ module IMS::LTI
         end
       end
     end
+
+    #JBIENIOSEK EDIT
+
+    def textresults(node)
+      return unless has_textresult_data?
+
+      node.result do |tres|
+        text_result_values(tres)
+      end
+    end
+
+    def text_result_values(node)
+      if @text_data
+        node.resultData do |tres_text|
+          tres_text.text @text_data.to_s
+        end
+      end
+    end
+
+    #END EDIT
 
     def has_required_attributes?
       @consumer_key && @consumer_secret && @lis_outcome_service_url && @lis_result_sourcedid && @operation
@@ -196,6 +236,9 @@ module IMS::LTI
                 guid.sourcedId @lis_result_sourcedid
               end
               results(record)
+              #JBIENIOSEK EDIT
+              textresults(record)
+              #END EDIT
             end
           end
         end

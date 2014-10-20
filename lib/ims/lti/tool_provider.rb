@@ -127,6 +127,15 @@ module IMS::LTI
       new_request.post_replace_result!(score)
     end
 
+
+    #JBIENIOSEK EDIT
+
+    def post_replace_result_text!(score, text_data)
+      new_request.post_replace_result_text!(score, text_data)
+    end
+
+    #END EDIT
+
     # POSTs a delete request to the Tool Consumer
     #
     # Creates a new OutcomeRequest object and stores it in @outcome_requests
